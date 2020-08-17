@@ -14,7 +14,7 @@ class CPU:
         return self.ram[location]
 
     def ram_write(self, value, location):
-        return self.ram[location] = value
+        self.ram[location] = value
 
     def load(self):
         """Load a program into memory."""
@@ -32,9 +32,9 @@ class CPU:
             0b00000000,
             0b00000001,  # HLT
         ]
-        self.ram = [0]*8
-
+        self.ram = [0] * 255
         self.pc = 0
+        self.reg = [0] * 8
 
         for instruction in program:
             self.ram[address] = instruction
@@ -70,3 +70,21 @@ class CPU:
 
     def run(self):
         self.trace()
+        # print(self.load())
+        running = True
+        while running:
+            ir = self.reg[self.pc]
+            # print(self.reg, self.pc)
+            # print(ir)
+            if ir == 1:
+                print('COMPUTER STOPPED')
+                running = False
+                self.pc += 1
+            if ir == 130:
+                print(f'ram writing {self.reg[self.pc+1]} to {self.pc+2} ')
+
+                self.pc += 3
+            if ir == 71:
+                self.ram_read(self.reg[self.pc + 1])
+                print(self.ram_read(self.pc + 1))
+                self.pc += 2
