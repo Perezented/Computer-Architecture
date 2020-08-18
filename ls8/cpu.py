@@ -8,14 +8,9 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         print('Welcome, Now booting up Janky OS')
-
+        self.pc = 0
+        self.ram = [0]*255
         self.reg = [0] * 8
-
-    def ram_read(self, location):
-        return self.ram[location]
-
-    def ram_write(self, value, location,):
-        self.ram[location] = value
 
     def load(self):
         """Load a program into memory."""
@@ -33,8 +28,6 @@ class CPU:
             0b00000000,
             0b00000001,  # HLT
         ]
-        self.pc = 0
-        self.ram = [0]*255
         for instruction in program:
             self.ram[address] = instruction
             address += 1
@@ -67,33 +60,50 @@ class CPU:
 
         print()
 
+    def ram_read(self, address):
+        # print(address, self.ram)
+        # print(self.ram[address])
+        self.reg[0] = self.ram[address]
+        print(self.ram[self.reg[0]])
+        return self.ram[self.reg[0]]
+
+    def ram_write(self, address, item):
+        # print(address, self.ram[address])
+        # print(item, self.ram[item])
+        self.reg[1] = self.ram[item]
+        self.reg[0] = self.ram[address]
+        # print(self.reg)
+        self.ram[self.reg[0]] = self.reg[1]
+        return self.ram
+
     def run(self):
 
         self.trace()
         # print(self.load())
         print(f'Total reg: {self.reg} ')
         print(f'Total RAM: {self.ram}')
-        print(f'Your pc: {self.pc}')
 
         running = True
         while running:
-
             ir = self.ram[self.pc]
-            # print(self.reg, self.pc)
-            print(f'Current IR: {ir}')
+            # print(f'Current IR: {ir}')
 
             if ir == 1:  # HLT -- Computer Halt (STOP)
+                print(f'{"-"*10} HLT {"-"*10} ')
                 print('COMPUTER STOPPED')
                 running = False
                 self.pc += 1
-            if ir == 130:   # LDI -- Add following item to ram
-                print(f' in LDI, self.pc: {self.pc} ')
+
+            if ir == 130:  # LDI -- Add following item to ram
+                print(f'{"-"*10} LDI {"-"*10} ')
+                # print(f' in LDI, self.pc: {self.pc} ')
+                # print(self.reg)
+                self.ram_write(self.pc+1, self.pc+2)
                 self.pc += 3
+
             if ir == 71:    # PRN -- Display next item from ram
-                print(self.pc, self.pc + 1, self.pc + 2)
-                print(self.ram[self.pc])
-                print(self.ram[self.pc+1])
-                print(self.ram[self.pc+2])
+                print(f'{"-"*10} PRN {"-"*10} ')
+                # print(f' in PRN, self.pc: {self.pc} ')
                 self.ram_read(self.pc+1)
-                print(f'self.ram_read(self.pc+1): {self.ram_read(self.pc+2)} ')
+                # print(self.ram)
                 self.pc += 2
