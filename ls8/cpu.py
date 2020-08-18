@@ -1,3 +1,4 @@
+import sys
 
 """CPU functionality."""
 
@@ -14,20 +15,52 @@ class CPU:
 
     def load(self):
         """Load a program into memory."""
+        program = []
+        print(sys.argv)
+
+        load_file = sys.argv[1]
+        with open(load_file, 'r') as f:
+            for line in f:
+                # print(line)
+                if line[0] == '\n' or line[0] == '#' or len(line) == 0:
+                    continue
+                else:
+                    print(line[:8])
+                    program.append(int(line[:8], 2))
+
+            # i = 0
+            # eight = ''
+            # while i != len(lines):
+            #     if lines[i] == '1' or lines[i] == '0':
+            #         if len(eight) != 8:
+            #             # print(lines[i])
+            #             eight = eight + lines[i]
+            #             # print(eight)
+            #         else:
+            #             print(eight)
+            #             program.append(bin(int(eight)))
+            #             eight = ''
+
+            #     i += 1
+            # print(eight)
+            print(program)
+            # print(lines)
+            f.close()
 
         address = 0
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111,  # PRN R0
-            0b00000000,
-            0b00000001,  # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     # 0b10000010,  # LDI R0,8
+        #     # 0b00000000,
+        #     # 0b00001000,
+        #     # 0b01000111,  # PRN R0
+        #     # 0b00000000,
+        #     # 0b00000001,  # HLT
+        # ]
+
         for instruction in program:
             self.ram[address] = instruction
             address += 1
