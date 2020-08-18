@@ -8,24 +8,44 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.reg = [0] * 8
+        self.ram = [0] * 64
+        self.pc = 0
 
     def load(self):
         """Load a program into memory."""
+        program = []
+        if len(sys.argv) == 1:
 
+            sys.argv.append(
+                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\print8.ls8')
+            print(sys.argv)
+
+        load_file = sys.argv[1]
+        with open(load_file, 'r') as f:
+            for line in f:
+                # print(line)
+                if line[0] == '\n' or line[0] == '#' or len(line) == 0:
+                    continue
+                else:
+                    # print(line[:8])
+                    program.append(int(line[:8], 2))
+
+            # print(program)
+            f.close()
         address = 0
 
-        # For now, we've just hardcoded a program:
+        # # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111,  # PRN R0
-            0b00000000,
-            0b00000001,  # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010,  # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111,  # PRN R0
+        #     0b00000000,
+        #     0b00000001,  # HLT
+        # ]
 
         for instruction in program:
             self.ram[address] = instruction
@@ -59,6 +79,8 @@ class CPU:
             print(" %02X" % self.reg[i], end='')
 
         print()
+
+    def ram_read()
 
     def run(self):
         """Run the CPU."""
