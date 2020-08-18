@@ -9,6 +9,7 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         print('Welcome, Now booting up Janky OS')
+        print('--------------------------------')
         self.pc = 0
         self.ram = [0]*255
         self.reg = [0] * 8
@@ -17,6 +18,11 @@ class CPU:
         """Load a program into memory."""
         program = []
         print(sys.argv)
+        if len(sys.argv) == 1:
+
+            sys.argv.append(
+                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\mult.ls8')
+            print(sys.argv)
 
         load_file = sys.argv[1]
         with open(load_file, 'r') as f:
@@ -53,12 +59,12 @@ class CPU:
 
         # program = [
         #     # From print8.ls8
-        #     # 0b10000010,  # LDI R0,8
-        #     # 0b00000000,
-        #     # 0b00001000,
-        #     # 0b01000111,  # PRN R0
-        #     # 0b00000000,
-        #     # 0b00000001,  # HLT
+        #     0b10000010,  # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111,  # PRN R0
+        #     0b00000000,
+        #     0b00000001,  # HLT
         # ]
 
         for instruction in program:
@@ -71,6 +77,10 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         # elif op == "SUB": etc
+        if op == "MUL":
+            self.reg[0] = self.ram[0]
+            self.reg[1] = self.ram[1]
+            self.ram[reg_a] = self.reg[0]*self.reg[1]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -113,13 +123,15 @@ class CPU:
 
         self.trace()
         # print(self.load())
-        print(f'Total reg: {self.reg} ')
-        print(f'Total RAM: {self.ram}')
+        # print(f'Total reg: {self.reg} ')
+        # print(f'Total RAM: {self.ram}')
 
         running = True
         while running:
             ir = self.ram[self.pc]
-            # print(f'Current IR: {ir}')
+            print(f'Current IR: {ir}')
+            # print(self.ram)
+            print(self.reg)
 
             if ir == 1:  # HLT -- Computer Halt (STOP)
                 print(f'{"-"*10} HLT {"-"*10} ')
@@ -140,3 +152,7 @@ class CPU:
                 self.ram_read(self.pc+1)
                 # print(self.ram)
                 self.pc += 2
+            if ir == 162:
+                print(f'{"-"*10} MUL {"-"*10} ')
+                print(f'current ram: {self.ram}')
+                self.alu('MUL', self.pc + 1, self.pc + 2)
