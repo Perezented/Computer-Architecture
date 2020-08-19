@@ -9,7 +9,7 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.reg = [0] * 8
-        self.ram = [0] * 64
+        self.ram = [0] * 256
         self.pc = 0
 
     def load(self):
@@ -28,11 +28,12 @@ class CPU:
                 if line[0] == '\n' or line[0] == '#' or len(line) == 0:
                     continue
                 else:
-                    # print(line[:8])
+                    print(line[:8])
                     program.append(int(line[:8], 2))
 
             # print(program)
             f.close()
+
         address = 0
 
         # # For now, we've just hardcoded a program:
@@ -80,8 +81,60 @@ class CPU:
 
         print()
 
-    def ram_read()
-
     def run(self):
         """Run the CPU."""
-        pass
+        self.trace()
+
+        running = True
+        while running:
+            ir = self.ram_read(self.pc)
+            print(f'Current IR: {ir}')
+
+            if ir == 1:  # HLT -- Computer Halt (STOP)
+                print(f'{"-"*10} HLT {"-"*10} ')
+                print('COMPUTER STOPPED')
+                running = False
+                self.pc += 1
+
+            if ir == 130:  # LDI -- Add following item to reg???
+                print(f'{"-"*10} LDI {"-"*10} ')
+                print(self.pc, self.reg, self.ram)
+                self.reg[self.ram_read(self.pc + 1)
+                         ] = self.ram_read(self.pc + 2)
+
+                self.pc += 3
+
+            if ir == 71:    # PRN -- Display next item from ram
+                print(self.reg[self.ram_read(self.pc + 1)])
+
+                self.pc += 2
+
+            if ir == 162:
+                print(f'{"-"*10} MUL {"-"*10} ')
+                print(f'current ram: {self.ram}')
+                self.alu('MUL', self.pc + 1, self.pc + 2)
+
+    def ram_read(self, address):
+        # print(self.ram[address])
+        return self.ram[address]
+
+    def ram_write(self, address, item):
+        print('in ram_write')
+        print(address, item)
+        self.ram[address] = item
+
+    def reg_write(self, address, item):
+        self.reg[address] = item
+
+    def reg_read(self, address):
+        print(self.reg[address])
+        return self.reg[address]
+
+
+"""Main."""
+
+
+cpu = CPU()
+
+cpu.load()
+cpu.run()
