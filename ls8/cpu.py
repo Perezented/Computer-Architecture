@@ -18,7 +18,7 @@ class CPU:
         if len(sys.argv) == 1:
 
             sys.argv.append(
-                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\print8.ls8')
+                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\mult.ls8')
             print(sys.argv)
 
         load_file = sys.argv[1]
@@ -36,18 +36,6 @@ class CPU:
 
         address = 0
 
-        # # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010,  # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111,  # PRN R0
-        #     0b00000000,
-        #     0b00000001,  # HLT
-        # ]
-
         for instruction in program:
             self.ram[address] = instruction
             address += 1
@@ -57,6 +45,8 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+        if op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
         # elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
@@ -96,7 +86,7 @@ class CPU:
                 running = False
                 self.pc += 1
 
-            if ir == 130:  # LDI -- Add following item to reg???
+            if ir == 0b10000010:  # LDI -- Add following item to reg???
                 print(f'{"-"*10} LDI {"-"*10} ')
                 print(self.pc, self.reg, self.ram)
                 self.reg[self.ram_read(self.pc + 1)
@@ -109,10 +99,12 @@ class CPU:
 
                 self.pc += 2
 
-            if ir == 162:
+            if ir == 0b10100010:   # MUL -- multipy the next two
                 print(f'{"-"*10} MUL {"-"*10} ')
-                print(f'current ram: {self.ram}')
-                self.alu('MUL', self.pc + 1, self.pc + 2)
+                print(f'current ram: {self.ram, self.pc}')
+                print(self.reg)
+                self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
+                self.pc += 3
 
     def ram_read(self, address):
         # print(self.ram[address])
