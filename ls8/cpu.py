@@ -18,7 +18,7 @@ class CPU:
         if len(sys.argv) == 1:
 
             sys.argv.append(
-                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\mult.ls8')
+                'c:\\Users\\MPere\\Desktop\\Lambda\\Python\\Computer-Architecture\\ls8\\examples\\stack.ls8')
             print(sys.argv)
 
         load_file = sys.argv[1]
