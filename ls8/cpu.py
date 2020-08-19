@@ -11,6 +11,7 @@ class CPU:
         self.reg = [0] * 8
         self.ram = [0] * 256
         self.pc = 0
+        self.reg[7] = 245
 
     def load(self):
         """Load a program into memory."""
@@ -88,7 +89,7 @@ class CPU:
 
             if ir == 0b10000010:  # LDI -- Add following item to reg???
                 print(f'{"-"*10} LDI {"-"*10} ')
-                print(self.pc, self.reg, self.ram)
+                # print(self.pc, self.reg, self.ram)
                 self.reg[self.ram_read(self.pc + 1)
                          ] = self.ram_read(self.pc + 2)
 
@@ -101,10 +102,32 @@ class CPU:
 
             if ir == 0b10100010:   # MUL -- multipy the next two
                 print(f'{"-"*10} MUL {"-"*10} ')
-                print(f'current ram: {self.ram, self.pc}')
-                print(self.reg)
+                # print(f'current ram: {self.ram, self.pc}')
+                # print(self.reg)
                 self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
                 self.pc += 3
+            if ir == 0b01000101:    # Push -- add item to stack in end of ram
+                print(f'{"-"*10} Push {"-"*10} ')
+                # print(f'current ram: {self.ram, self.pc}')
+                # print(self.reg)
+                # print(self.pc)
+
+                # self.reg[7] -= 1
+                # self.reg[0] = self.ram_read(self.pc + 1)
+                # self.reg[1] = registers[self.reg[0]]
+                # top_of_stack = self.reg[7]
+                # self.ram[top_of_stack] = self.reg[1]
+                # print(self.ram[240:])
+
+                self.ram_push(self.pc + 1)
+                self.pc += 2
+            if ir == 0b01000110:    # Pop -- remove the last item from the stack
+                print(f'{"-"*10} Pop {"-"*10} ')
+
+                self.ram_pop(self.ram[self.pc + 1])
+                self.pc += 2
+
+                # break
 
     def ram_read(self, address):
         # print(self.ram[address])
@@ -114,6 +137,20 @@ class CPU:
         print('in ram_write')
         print(address, item)
         self.ram[address] = item
+
+    def ram_pop(self, address):
+        # print(address)
+        self.reg[address] = self.ram[self.reg[7]]
+        self.reg[7] += 1
+        # print(self.ram[self.reg[7] - 1], self.reg)
+
+    def ram_push(self, address):
+        # print(address, self.reg, self.ram[245:])
+        self.reg[7] -= 1
+
+        # print(self.ram[self.reg[7]], self.reg)
+        self.ram[self.reg[7]] = self.reg[self.ram[address]]
+        # print(self.ram[self.reg[7]], self.reg)
 
     def reg_write(self, address, item):
         self.reg[address] = item
